@@ -14,15 +14,15 @@ import matplotlib.animation as animation
 
 # Define Constants
 miu = 3.986*10**14
-rad_tar = 6793137
+rad_tar = 6378.1+1020 #radius of target from earth surface(km), poliastro uses Earth radius of 6378km
 n = np.sqrt(miu/(rad_tar**3))
 mass = 1.33 #(Kg) for cubesat 
-F = np.array([0,0,0])
 G = 6.67430*10**-11 #Gravitational constant
 mass_E = 5.972*10**24 #Earth Mass
+meshsize = 1000
 
-circularorbit = Orbit.circular(Earth, rad_tar * u.meter, 0*u.deg, 0*u.deg, 0*u.deg)#, time.Time("2006-01-19", scale='utc'))
-coord = circularorbit.sample(1000)
+circularorbit = Orbit.circular(Earth, (rad_tar-6378.1) * u.km, 0*u.deg, 0*u.deg, 0*u.deg)#, time.Time("2006-01-19", scale='utc'))inc=0 * u.deg, raan=0 * u.deg, arglat=0 * u.deg,
+coord = circularorbit.sample(meshsize)
 
 plotter = OrbitPlotter3D()
 plotter.set_attractor(Earth)
@@ -34,10 +34,10 @@ plotter.set_view(30 * u.deg, 260 * u.deg, distance=3 * u.km)
 def vel_tar(rad_tar):
     return np.sqrt(G*mass_E/rad_tar)
 
-def controller():
-    return np.array([0,0,0])
+def controller(): # Move away test
+    return np.array([0,0,0]) 
     
-def model(U,x):
+def model(U,x): #Add contoller 3/23
     F = controller()
     return [U[3],
             U[4],
@@ -52,7 +52,7 @@ def run_model(q0):
     # length of one circular orbital period for target
     circum = 2*np.pi*rad_tar
     # time steps calculated for 1 orbital period, partitioned in 1000 steps
-    t_step = np.linspace(0,circum/vel_tar(rad_tar),1000)
+    t_step = np.linspace(0,circum/vel_tar(rad_tar),meshsize)
     
     Us = odeint(model, q, t_step)
     
@@ -61,57 +61,47 @@ def run_model(q0):
 
 
 # Initial Condition
-U0 = [rad_tar,0,0, 0,-2*n*rad_tar,0]
+U0 = [500,0,0, 0,-2*n*500,0]
 
-xval,yval,zval = run_model(U0)
+rel_x,rel_y,rel_z = run_model(U0)
 
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_zlabel('z')  
-ax.set_aspect('auto')
-ax.plot3D(xval,yval,zval, 'grey')
-
-
-
-anglestep = np.linspace(0, 2*np.pi, 1000)
-
-# def rot(x,y,theta):
-#     rotationmat = np.array([[np.cos(theta), -np.sin(theta)],[np.sin(theta), np.cos(theta)]])
-#     return np.matmul(rotationmat, np.array([[x],[y]]))
-#return np.matmul(rotationmat, np.array([[x.value],[y.value]]))
-
-newz = np.copy(zval) + np.copy(coord.z.value)
-newx = np.copy(xval) + np.copy(coord.x.value)
-newy = np.copy(yval) + np.copy(coord.y.value)
-
-# for i in range(1000):
-#     rotated = rot(np.copy(coord.x.value)[i],np.copy(coord.y.value)[i],anglestep[i])
-#     newx[i] = newx[i] + rotated[0]
-#     newy[i] = newy[i] + rotated[1]
-plt.plot(anglestep, newy-yval)
-plt.show  
-newx = newx*u.km    
-newy = newy*u.km 
-newz = newz*u.km
-
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_zlabel('z')  
-ax.set_aspect('auto')
-ax.plot3D(xval,yval,zval, 'grey')
-ax.plot3D(newx,newy,newz)
+chaser_x = rel_x + np.copy(coord.x.value)
+chaser_y = rel_y + np.copy(coord.y.value)
+chaser_z = rel_z + np.copy(coord.z.value)
+  
+chaser_x = chaser_x*u.km    
+chaser_y = chaser_y*u.km 
+chaser_z = chaser_z*u.km
 
 
 
 
+angles = np.linspace(0,2*np.pi,1000)
 
-#Create Earth on Figure ###############################
+############ Relative Distance Plots  ######################################################
+#plot 1:
+plt.subplot(1, 3, 1)
+plt.plot(angles,rel_x) 
+plt.xlabel("") 
+plt.ylabel("Relative x distance") 
 
+#plot 2:
+plt.subplot(1, 3, 2)
+plt.plot(angles,rel_y) 
+plt.xlabel("") 
+plt.ylabel("Relative y distance")
+
+#plot 3:
+plt.subplot(1, 3, 3)
+plt.plot(angles,rel_z) 
+plt.xlabel("") 
+plt.ylabel("Relative z distance")
+
+
+
+############ Animated Trajectory ######################################################
+
+#Create Earth on Figure 
 u = np.linspace(0,2*np.pi,100)
 v = np.linspace(0,  np.pi,100)
 r = 6378.1 #km
@@ -119,7 +109,7 @@ xe = r * np.outer(np.cos(u), np.sin(v))
 ye = r * np.outer(np.sin(u), np.sin(v))
 ze = r * np.outer(np.ones(np.size(u)), np.cos(v))
 
-#PRESET POINTS for target ##############################
+#PRESET CIRCULAR POINTS for target ##############################
 x = coord.x.value
 y = coord.y.value
 z = coord.z.value
@@ -130,18 +120,17 @@ y = y.reshape(x.shape[0],1)
 z = z.reshape(x.shape[0],1)
 coordinate= np.append(coordinate, y, axis = 1)
 coordinate= np.append(coordinate, z, axis = 1)
-
 #PRESET POINTS for chaser ##############################
-xc = newx.value
-yc = newy.value
-zc = newz.value
+xc = chaser_x.value
+yc = chaser_y.value
+zc = chaser_z.value
 
 #Put into array of shape(number of values, 3)
 coordinatec = xc.reshape(xc.shape[0],1)
 yc = yc.reshape(xc.shape[0],1)
+coordinatec= np.append(coordinatec, yc, axis = 1)
 zc = zc.reshape(xc.shape[0],1)
-coordinatec= np.append(coordinate, yc, axis = 1)
-coordinatec= np.append(coordinate, zc, axis = 1)
+coordinatec= np.append(coordinatec, zc, axis = 1)
 
 # Animation ############################################
 
@@ -176,6 +165,30 @@ ani = animation.FuncAnimation(
     fig, update_lines, num_steps, fargs=(walks, lines), interval=2)
 anic = animation.FuncAnimation(
     fig, update_lines, num_steps, fargs=(walksc, linesc), interval=2)
+plt.show()
 
+############ Wire Frame Plot Trajectory ######################################################
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('z') 
+u = np.linspace(0,2*np.pi,20)
+v = np.linspace(0,  np.pi,20)
+r = 6378.1 #km
+xe = r * np.outer(np.cos(u), np.sin(v))
+ye = r * np.outer(np.sin(u), np.sin(v))
+ze = r * np.outer(np.ones(np.size(u)), np.cos(v)) 
+ax.set_aspect('auto')
+ax.set(xlim3d=(-15000, 15000), xlabel='X')
+ax.set(ylim3d=(-15000, 15000), ylabel='Y')
+ax.set(zlim3d=(-15000, 15000), zlabel='Z')
+ax.plot_wireframe(xe,ye,ze,color='grey',linewidth = 0.4)
+ax.plot3D(coord.x.value,coord.y.value,coord.z.value, 'green',linewidth = 1.2, label = "Target Satellite Orbit")
+ax.plot3D(chaser_x,chaser_y,chaser_z,color = 'red',linewidth = 1.2, label = "Chaser Satellite Orbit")
+ax.legend(loc='upper left')
+ax.view_init(60, 35)
 plt.show()
 # %%
+
+

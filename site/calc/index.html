@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://sat_temp.com/calc/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Mechanics - Satellite Temp</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Mechanics";
+        var mkdocs_page_input_path = "calc.md";
+        var mkdocs_page_url = "/calc/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Satellite Temp
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../home/">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Mechanics</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#variables">Variables</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#clohesy-whiltshire-equation">Clohesy Whiltshire Equation</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Satellite Temp</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Mechanics</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h4 id="mechanics-of-calculations">Mechanics of Calculations</h4>
+<h5 id="variables">Variables</h5>
+<p><span class="arithmatex">\(r\)</span> = radius of target spacecraft's circular orbit <br>
+<span class="arithmatex">\(\mu\)</span> = standard gravitational parameter <br>
+<span class="arithmatex">\(n\)</span> = mean motion of the target spacecraft (1)
+$$
+n = \sqrt{\frac{ {\mu} }{r^3}}
+$$ </p>
+<p><img alt="Block Diagram" src="imgs/satellite_diagram.png" /></p>
+<h5 id="clohesy-whiltshire-equation">Clohesy Whiltshire Equation</h5>
+<div class="arithmatex">\[
+\ddot x - 2n\dot y - 3n^2x =  a_{x}
+\]</div>
+<div class="arithmatex">\[
+\ddot y + 2n\dot x =  a_{y}
+\]</div>
+<div class="arithmatex">\[
+\ddot z + n^2 z =  a_{z}
+\]</div>
+<div class="arithmatex">\[
+Thrust F_{x} = m_{Satellite}/ a_{x}
+\]</div>
+<div class="arithmatex">\[
+Thrust_{y} = F_{y}/m_{Satellite}
+\]</div>
+<div class="arithmatex">\[
+Thrust_{x} = F_{z}/m_{Satellite}
+\]</div>
+<p>The Clohessy Whiltshire update is rewritten in matrix format as:</p>
+<p><span class="arithmatex">\(\left[\begin{array}{cc} \dot x \\ \dot y \\  \dot z \\ \dot v_{x} \\  \dot v_{y} \\ \dot v_{z} \end{array}\right] =\)</span>
+<span class="arithmatex">\(\left[\begin{array}{cc} 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\  
+                         0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 \\
+                         0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 \\ 
+                         3n^2 &amp; 0 &amp; 0 &amp; 2n &amp; 0 &amp; 0 \\
+                         0 &amp; -2n &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+                         0 &amp; 0 &amp; 0 &amp; 0 &amp; -n^2 &amp; 0 
+\end{array}\right] *\)</span>
+<span class="arithmatex">\(\left[\begin{array}{cc} x \\  y \\  z \\ v_{x} \\ v_{y} \\ v_{z} \end{array}\right] +\)</span>
+<span class="arithmatex">\(\left[\begin{array}{cc} 0 &amp; 0 &amp; 0 \\
+                         0 &amp; 0 &amp; 0 \\ 
+                         0 &amp; 0 &amp; 0 \\
+                         1 &amp; 0 &amp; 0 \\  
+                         0 &amp; 1 &amp; 0 \\
+                         0 &amp; 0 &amp; 1
+\end{array}\right] *\)</span>
+<span class="arithmatex">\(\left[\begin{array}{cc} F_{x} \\ F_{y} \\ F_{z} \end{array}\right]\)</span></p>
+<p>This is mapped out in the Relative Trajectory function:</p>
+<pre><code class="language-python">    def reltrajectorygenerate(self,U,x):
+        accel = self.controller()
+        return [U[3], 
+                U[4], 
+                U[5], 
+                3*(self.n**2)*U[0]+2*self.n*U[4] + accel[0], 
+                -2*self.n*U[3] + accel[1], 
+                -(self.n**2)*U[2] + accel[2]]
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../home/" class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../home/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../javascripts/mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

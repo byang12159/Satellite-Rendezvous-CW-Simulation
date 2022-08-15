@@ -3,7 +3,7 @@ site_name: Satellite Temp
 site_url: https://sat_temp.com/
 nav:
   - Home: home.md
-  - Mechanics: calc.md
+  - Mechanics: index.md
 
 plugins:
   - search

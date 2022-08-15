@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://sat_temp.com/home/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Home - Satellite Temp</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "home.md";
+        var mkdocs_page_url = "/home/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Satellite Temp
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#installations">Installations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#basic-mechanics">Basic Mechanics</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#system-parameters">System Parameters</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#example-case">Example Case</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../calc/">Mechanics</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Satellite Temp</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+      <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="introduction">Introduction</h2>
+<p>This repository provides a satellite rendezvous simulation following the Clohessy Whiltshire Equations (CWH).</p>
+<h3 id="getting-started">Getting Started</h3>
+<h4 id="installations">Installations</h4>
+<ol>
+<li>Astropy <code>pip install astropy</code></li>
+<li>NumPy <code>pip3 install numpy</code></li>
+<li>SciPy <code>pip3 install scipy</code></li>
+<li>Matplotlib <code>pip3 install matplotlib</code></li>
+</ol>
+<h4 id="basic-mechanics">Basic Mechanics</h4>
+<p><span class="arithmatex">\(U_{target}\)</span> = state of target satellite relative to Earth <br>
+<span class="arithmatex">\(U_{chaser}\)</span> = state of chaser satellite relative to Earth</p>
+<p>The CWH equations describe the relative motion of a chaser spacecraft in circular/elliptical orbit around a target spacecraft in circular orbit.</p>
+<p>To update the state of the chaser at any time point, and obtain results as Earth frame instead of relative frame, requires the vector addition as shown
+$$ U_{chaser}(t) = U_{target}(t) + U_{chaser}^{update}(t) $$</p>
+<p>INSERT diagram </p>
+<p>The update <span class="arithmatex">\(U_{chaser}^{update}(t)\)</span> is obtained by solving the following equations using scipy's odeint solver
+$$ \dot U = AU + BF $$
+Matrix <span class="arithmatex">\(A\)</span> contains the dynamics given by CWH. Matrix <span class="arithmatex">\(B\)</span> maps the forces in the correct locations. More details can be found in the mechanics section. </p>
+<h3 id="usage">Usage</h3>
+<h4 id="system-parameters">System Parameters</h4>
+<p>Most of the defined variables do not need to be changed for Earth-centric cubesat simulations. The following are variables that will differ from mission to mission:</p>
+<pre><code class="language-python">rad_tar = 6378.1+1020                          # radius of target from earth center (km)
+mass = 1.33                                    # Chaser satellite mass (kg) 
+meshsize = 1000                                # Granularity of time step
+meshsize = 1000                                # Granularity of time step
+periods = 1
+initialstate = np.array([x, y, z, Vx, Vy, Vz]) # Initial state of chaser at the start of simulation
+thrustforce = np.array([Fx, Fy, Fz])           # Chaser thrust force 
+</code></pre>
+<h4 id="example-case">Example Case</h4>
+<p>A satellite (chaser) initiated an orbital transfer to approach the target satellite orbit. The simulation shows if it can maintain within a stable orbit, governed by the CWH equation.</p>
+<pre><code class="language-python">if __name__ == '__main__':
+
+    # Take input as result from multi_sat.py, the last entries of X_NMT 
+    # X_NMT_last = [X_NMT[0,-1],X_NMT[1,-1],X_NMT[2,-1],X_NMT[3,-1],X_NMT[4,-1],X_NMT[5,-1]]
+
+    X_NMT_last = np.array([-1000.1369261894047, -1484.113395146748, 0.0, -0.7620922284079551, 2.054281246393022, 0.0])
+    sim = CWHmotion()
+    sim.initialstate = X_NMT_last
+
+    rel_x,rel_y,rel_z, angles, chaser_x, chaser_y, chaser_z, coord = sim.main()
+
+
+</code></pre>
+<ul>
+<li>https://en.wikipedia.org/wiki/Clohessy%E2%80%93Wiltshire_equations</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../calc/" class="btn btn-neutral float-right" title="Mechanics">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="../calc/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../javascripts/mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

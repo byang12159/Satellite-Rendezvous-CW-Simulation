@@ -73,9 +73,6 @@ chaser_x = chaser_x*u.km
 chaser_y = chaser_y*u.km 
 chaser_z = chaser_z*u.km
 
-
-
-
 angles = np.linspace(0,2*np.pi,1000)
 
 ############ Relative Distance Plots  ######################################################

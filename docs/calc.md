@@ -7,7 +7,6 @@ $$
 n = \sqrt{\frac{ {\mu} }{r^3}}
 $$ 
 
-![Block Diagram](imgs/satellite_diagram.png)
 
 ##### Clohesy Whiltshire Equation
 $$
